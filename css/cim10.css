@@ -1,0 +1,74 @@
+body
+{
+  font-family: Helvetica, sans-serif;
+  font-size: 1em;
+}
+
+.label
+{
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 75%;
+  font-weight: bold;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 1em;
+}
+
+.label-info
+{
+  background-color: #5bc0de;
+}
+
+.label-success
+{
+  background-color: #449d44;
+}
+
+.label-warning
+{
+  background-color: #ec971f;
+}
+
+.label-danger
+{
+  background-color: #c9302c;
+}
+
+#search
+{
+  font-size: 150%;
+  padding: .5em;
+  margin: 1em;
+  width: 80%;
+}
+
+.tree li
+{
+  margin:0;
+  padding:0.2em;
+  list-style-position:inside;
+  list-style-image:url('../images/button.png');
+  cursor:auto;
+  color: #333;
+  font-weight: bold;
+}
+
+.tree li.open
+{
+  list-style-image:url('../images/button-open.png');
+  cursor:pointer;
+  color: #444;
+  font-weight: normal;
+}
+
+.tree li.closed
+{
+  list-style-image:url('../images/button-closed.png');
+  cursor:pointer;
+  color: #444;
+  font-weight: normal;
+}
