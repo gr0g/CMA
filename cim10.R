@@ -8,8 +8,11 @@ library(magrittr)
 read_csv2("cim10.csv") %>%
   mutate(famille_libelle = famille_libelle %>% str_replace("\\w\\d+ ", ""),
          CMD_libelle = CMD_libelle %>% str_replace("\\d+ ", "")) %>%
-left_join(read_csv("CMA_Gyn.txt", col_names = "code") %>%
-            mutate(gyn = "O"),
+left_join(read_csv("CMA_Neo.txt", col_names = "code") %>%
+            mutate(neo = "N"),
+          by = c("diag_code" = "code")) %>%
+left_join(read_csv("CMA_Obs.txt", col_names = "code") %>%
+            mutate(obs = "O"),
           by = c("diag_code" = "code")) -> cim10
 
 # groupes ----------
