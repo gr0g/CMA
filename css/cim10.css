@@ -18,22 +18,27 @@ body
   border-radius: 1em;
 }
 
-.label-info
+.label-O
 {
   background-color: #5bc0de;
 }
 
-.label-success
+.label-N
+{
+  background-color: #5bc0de;
+}
+
+.label-2
 {
   background-color: #449d44;
 }
 
-.label-warning
+.label-3
 {
   background-color: #ec971f;
 }
 
-.label-danger
+.label-4
 {
   background-color: #c9302c;
 }

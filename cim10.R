@@ -33,18 +33,24 @@ cim10 %<>%
   unite(famille, famille_code, famille_libelle, sep = " ") %>%
   unite(diag, diag_code, diag_libelle, sep = " ") %>%
   unite(CMD, CMD_code, CMD_libelle, sep = " ") %>%
+  unite(label, CMA, neo, obs, sep = "|") %>%
   mutate(famille = ifelse(famille == diag, "", famille)) %>%
   mutate(path = str_c(chapitre, groupe, famille, diag, sep = "|") %>%
                 str_replace("\\|{2,}", "|") %>%
+                str_split("\\|"),
+         label = label %>%
+                str_replace_all("NA|1", "") %>%
+                str_replace_all("\\|{2,}", "|") %>%
+                str_replace_all("(^\\|)|(\\|$)", "")) %>%
+  filter(label != "") %>%
+  mutate(label = label %>%
                 str_split("\\|")) %>%
-  select(path, CMA, gyn) %>%
-  filter(!is.na(CMA), CMA > 1 | gyn == "O")
+  select(path, label)
 
 rm(groupes)
 
 cim10 %<>% tree
-cim10 %<>% summ_var("CMA")
-cim10 %<>% summ_var("gyn")
+cim10 %<>% summ_var("label")
 cim10 %>% tree2html -> cim10_html
 
 tree <- function(df)
@@ -135,7 +141,7 @@ summ_var <- function(tr, varname = NULL)
   } else
   {
     tr %<>% map(summ_var, varname)
-    tr[[varname]] <- tr %>% map(varname) %>% unlist %>% unique %>% sort
+    tr[[varname]] <- tr %>% map(varname) %>% unlist %>% unique %>% sort %>% list
     tr
   }
 }
@@ -144,25 +150,14 @@ tree2html <- function(tr)
 {
   if (!is.data.frame(tr))
   {
-    tr %>% Filter(is.list, .) %>% names -> names
+    tr %>% Filter(is.list, .) %>% names %>% setdiff("label") -> names
     str_c('<ul>\n',
-          tr %>% Filter(is.list, .) %>% map2(names, function(tr, name)
+          tr %>% Filter(is.list, .) %>% names %>% setdiff("label") %>% tr[.] %>% map2(names, function(tr, name)
           {
-            labels <- c("info", "success", "warning", "danger")
-            label <- labels[tr$CMA]
-            label2 <- ifelse(length(tr$gyn) == 1, '<span class = "label label-info">O</span>', '')
-            str_c("<li>", name, str_c('<span class = "label label-', label, '">', tr$CMA, "</span>", collapse = " "), label2, tree2html(tr), "</li>", sep = " ")
+            # labels <- c("2" = "success", "3" = "warning", "4" = "danger", "O" = "info", "N" = "info")
+            # labels <- labels[tr$CMA]
+            str_c("<li>", name, str_c('<span class = "label label-', tr$label %>% unlist, '">', tr$label %>% unlist, "</span>", collapse = " "), tree2html(tr), "</li>", sep = " ")
           }) %>% str_c(collapse = "\n"),
           "</ul>")
   }
 }
-
-df <- data.frame(path = c(str_c("A", "A1", "A11", sep = "|"),
-                          str_c("A", "A1", "A11", sep = "|"),
-                          str_c("A", "A1", "A12", sep = "|"),
-                          str_c("A", "A2", sep = "|"),
-                          str_c("B", sep = "|")),
-                 var1 = letters[1:5],
-                 var2 = 1:5,
-                 stringsAsFactors = F) %>%
-      mutate(path = path %>% str_split("\\|"))
